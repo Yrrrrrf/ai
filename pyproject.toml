@@ -1,0 +1,37 @@
+[project]
+name = "ai"
+version = "0.1.0"
+description = "Some of the stuff I've created while learning the 'State of the Art' in AI."
+requires-python = ">=3.12"
+readme = "README.md"
+dependencies = [
+    # Core Deep Learning
+    # for development
+    "torch>=2.6.0",        # PyTorch for deep learning
+    # * for deployment
+    # "tensorflow>=2.18.0",  # Includes keras
+    
+    # Tools
+    "ipykernel>=6.29.5",    # Jupyter kernel
+
+    # Data Science & ML
+    "numpy",       # Numerical computing
+    # "pandas>=1.4.0",        # Data manipulation
+    "polars>=1.24.0",      # Fast DataFrame library in Rust
+    # "scikit-learn>=1.6.1", # Traditional machine learning
+    # "scipy>=1.15.2",       # Scientific computing
+    "matplotlib>=3.10.1",   # Plotting and visualization
+    "seaborn>=0.13.2",     # Statistical data visualization
+    
+    # Computer Vision
+    "opencv-python>=4.11.0.86", # CV2 for computer vision
+    "pillow>=11.1.0",      # Image processing
+    
+    # # Natural Language Processing
+    # "transformers>=4.49.0", # State-of-art NLP models
+    # "spacy>=3.8.4",        # Industrial-strength NLP
+    # "nltk>=3.9.1",         # Natural Language Toolkit
+
+
+    # Some:
+]

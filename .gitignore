@@ -19,7 +19,7 @@ doc/*
 !doc/*.py
 
 # data
-dt/img/
-dt/temp/
-dt/raw/
-dt/proc/
+data/img/
+data/temp/
+data/raw/
+data/proc/

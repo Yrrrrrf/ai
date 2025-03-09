@@ -76,7 +76,7 @@ class ProjectPaths:
     
     @classmethod
     def DT(cls) -> Path:
-        return cls.ROOT() / "dt"
+        return cls.ROOT() / "data"
     
     @classmethod
     def resolve_path(cls, base_dir_func: Callable[[], Path], asset_type: AssetType, filename: Optional[str] = None) -> Path:

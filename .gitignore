@@ -11,4 +11,15 @@ wheels/
 
 # uv
 uv.lock
-doc/
+
+
+# project
+doc/*
+!doc/ga/
+!doc/*.py
+
+# data
+dt/img/
+dt/temp/
+dt/raw/
+dt/proc/

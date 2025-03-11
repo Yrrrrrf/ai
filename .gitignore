@@ -17,6 +17,7 @@ uv.lock
 doc/*
 !doc/ga/
 !doc/*.py
+!doc/*.ipynb
 
 # data
 data/img/

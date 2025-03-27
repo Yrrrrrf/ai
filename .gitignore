@@ -16,6 +16,7 @@ uv.lock
 # project
 doc/*
 !doc/ga/
+!doc/pattern/
 !doc/*.py
 !doc/*.ipynb
 

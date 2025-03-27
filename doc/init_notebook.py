@@ -30,6 +30,7 @@ project_root = setup_project_path()
 
 # * Common imports for AI notebooks
 from src.lib.ga import GeneticAlgorithm
+from src.lib.pso import PSO
 from src.lib.utils.asset_manager import AssetType, am
 import torch
 import numpy as np

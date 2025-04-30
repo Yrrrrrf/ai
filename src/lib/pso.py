@@ -96,7 +96,7 @@ class PSO:
 
     def update_velocity(self):
         """Update velocities of all particles."""
-        # Generate random values for stochastic components
+        # * Generate random values for stochastic components
         r1 = np.random.random((self.num_particles, self.dimensions))
         r2 = np.random.random((self.num_particles, self.dimensions))
 

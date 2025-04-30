@@ -11,7 +11,7 @@ wheels/
 
 # uv
 uv.lock
-
+.ruff_cache
 
 # project
 doc/*

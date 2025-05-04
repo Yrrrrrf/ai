@@ -19,6 +19,7 @@ doc/*
 !doc/pattern/
 !doc/*.py
 !doc/*.ipynb
+.env
 
 # data
 data/img/

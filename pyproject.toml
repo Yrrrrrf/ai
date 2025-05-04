@@ -1,5 +1,8 @@
 [project]
 name = "ai"
+authors = [
+    { name = "Fernando Bryan Reza Campos", email = "fer.rezac@outlook.com" },
+]
 version = "0.1.0"
 description = "Some of the stuff I've created while learning the 'State of the Art' in AI."
 requires-python = ">=3.12"
@@ -9,7 +12,6 @@ dependencies = [
     # for development
     # "torch>=2.7.0", # PyTorch for deep learning
     # uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
     # * for deployment
     # "tensorflow>=2.18.0",  # Includes keras
     # Tools
@@ -29,7 +31,13 @@ dependencies = [
     # "transformers>=4.49.0", # State-of-art NLP models
     # "spacy>=3.8.4",        # Industrial-strength NLP
     # "nltk>=3.9.1",         # Natural Language Toolkit
+
     # Some:
     "httpx>=0.28.1",
+
+    # * MCP
     "mcp[cli]>=1.6.0",
+
+    # * LLM
+    "google-genai>=1.13.0",
 ]

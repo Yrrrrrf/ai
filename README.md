@@ -21,7 +21,7 @@ The project maintains a simple organization:
 
 - [`doc/`](doc/) - Jupyter notebooks and documentation
 - [`src/`](src/) - Source code for implementations
-- [`dt/`](dt/) - Data files and outputs
+- [`data/`](data/) - Data files and outputs
 
 ## License
 

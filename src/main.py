@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from lib.pso import PSO
-from lib.pso_bench import benchmark_functions, run_benchmark
+from lib.bench.pso import benchmark_functions, run_benchmark
 
 
 def test_all_benchmarks():

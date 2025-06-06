@@ -1,46 +1,58 @@
 [project]
 name = "ai"
 authors = [
-    { name = "Fernando Bryan Reza Campos", email = "fer.rezac@outlook.com" },
+	{ name = "Fernando Bryan Reza Campos", email = "fer.rezac@outlook.com" },
 ]
 version = "0.1.0"
 description = "Some of the stuff I've created while learning the 'State of the Art' in AI."
 requires-python = ">=3.12"
 readme = "README.md"
+license = { file = "LICENSE" }
+keywords = [
+	"ai", 
+	"deep learning"
+	]
 dependencies = [
-    # Core Deep Learning
-    # for development
-    "torch",
-    # * for deployment
-    # "tensorflow>=2.18.0",  # Includes keras
+	# Core Deep Learning
+	"torch",
 
-    # Tools
-    "ipykernel>=6.29.5", # Jupyter kernel
+	# * for deployment
+	# "tensorflow>=2.18.0",  # Includes keras
+	# "torchvision>=0.19.0", # Computer vision library for PyTorch
+	# "torchaudio>=2.19.0", # Audio processing library for PyTorch
+	# "torchtext>=0.19.0", # Text processing library for PyTorch
+	# "torchdata>=0.7.0", # Data loading utilities for PyTorch
 
-    # Data Science & ML
-    "numpy", # Numerical computing
-    # "pandas>=1.4.0",        # Data manipulation
-    "polars>=1.30.0", # Fast DataFrame library in Rust
-    # "scikit-learn>=1.6.1", # Traditional machine learning
-    # "scipy>=1.15.2",       # Scientific computing
-    "matplotlib>=3.10.3", # Plotting and visualization
-    "seaborn>=0.13.2", # Statistical data visualization
+	# # "tensorflow-cpu>=2.18.0", # CPU version of TensorFlow
+	# # "tensorflow-gpu>=2.18.0", # GPU version of TensorFlow
 
-    # Computer Vision
-    "opencv-python>=4.11.0.86", # CV2 for computer vision
-    "pillow>=11.2.1", # Image processing
+	# Tools
+	"ipykernel>=6.29.5", # Jupyter kernel
 
-    # # Natural Language Processing
-    # "transformers>=4.49.0", # State-of-art NLP models
-    # "spacy>=3.8.4",        # Industrial-strength NLP
-    # "nltk>=3.9.1",         # Natural Language Toolkit
-    "google-genai>=1.19.0",
+	# Data Science & ML
+	"numpy", # Numerical computing
+	# "pandas>=1.4.0",        # Data manipulation
+	"polars>=1.30.0", # Fast DataFrame library in Rust
+	# "scikit-learn>=1.6.1", # Traditional machine learning
+	# "scipy>=1.15.2",       # Scientific computing
+	"matplotlib>=3.10.3", # Plotting and visualization
+	"seaborn>=0.13.2", # Statistical data visualization
 
-    # * MCP
-    "mcp[cli]>=1.9.3",
+	# Computer Vision
+	"opencv-python>=4.11.0.86", # CV2 for computer vision
+	"pillow>=11.2.1", # Image processing
 
-    # Some:
-    "httpx>=0.28.1",
+	# # Natural Language Processing
+	# "transformers>=4.49.0", # State-of-art NLP models
+	# "spacy>=3.8.4",        # Industrial-strength NLP
+	# "nltk>=3.9.1",         # Natural Language Toolkit
+	"google-genai>=1.19.0",
+
+	# * MCP
+	"mcp[cli]>=1.9.3",
+
+	# Some:
+	"httpx>=0.28.1",
 
 ]
 
@@ -51,7 +63,7 @@ explicit = true
 
 [tool.uv.sources]
 torch = [
-  { index = "pytorch-cu124", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+	{ index = "pytorch-cu124", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
 ]
 # torchvision = [
 #   { index = "pytorch-cu124", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },

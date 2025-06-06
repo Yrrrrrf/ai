@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from lib.model.pso import PSO
 from lib.benchmarks.fn import benchmark_functions, run_benchmark
+from lib.utils.asset_manager import AssetManager
 
 
 def test_all_benchmarks():
@@ -107,5 +108,5 @@ def compare_parameters():
     plt.grid(True)
     plt.legend()
     plt.yscale("log")  # Log scale often helps visualize convergence better
-    plt.savefig("pso_parameter_comparison.png")
+    plt.savefig(AssetManager.get_temp("pso_parameter_comparison.png"))
     plt.show()

@@ -3,6 +3,7 @@ GitIngest Script - Extract and save repository information
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 from typing import Tuple
@@ -17,6 +18,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "url",
+        nargs="*",  # Allow multiple arguments
         help="Repository URL or local path (supports both Unix '/' and Windows '\\' separators)",
     )
     parser.add_argument(
@@ -25,7 +27,15 @@ def parse_arguments() -> argparse.Namespace:
         help="Directory to save the output file",
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # Join multiple url arguments back into a single path (handles unquoted paths with spaces)
+    if isinstance(args.url, list):
+        if not args.url:
+            parser.error("URL/path argument is required")
+        args.url = " ".join(args.url)
+
+    return args
 
 
 def extract_author_project(url: str) -> Tuple[str, str]:
@@ -113,9 +123,15 @@ def save_to_file(
 
 def main() -> None:
     """Main function to orchestrate the script execution."""
-    args = parse_arguments()
+    # Change to script directory to ensure relative imports work
+    script_dir = Path(__file__).parent.parent  # Go up one level from scripts/
+    original_cwd = Path.cwd()
 
     try:
+        os.chdir(script_dir)
+
+        args = parse_arguments()
+
         # Extract author and project information
         author, project = extract_author_project(args.url)
         print(f"Processing: {author}/{project}")
@@ -136,9 +152,9 @@ def main() -> None:
     except KeyboardInterrupt:
         print("\nOperation cancelled by user", file=sys.stderr)
         sys.exit(1)
+    finally:
+        os.chdir(original_cwd)
 
 
 if __name__ == "__main__":
     main()
-    # url = "https://github.com/Yrrrrrf/sonar"
-    # url = "https://github.com/cyclotruc/gitingest"

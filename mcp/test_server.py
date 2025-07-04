@@ -21,21 +21,3 @@ def generate_random_number(max_value: int = 100) -> str:
     print(f"INFO: Tool 'generate_random_number' was called with max_value={max_value}.")
     num = random.randint(1, max_value)
     return f"Your random number is: {num}"
-
-
-# 3. The main entry point to run the server.
-def main():
-    """Main function to run the MCP server."""
-    # These print statements are crucial for debugging.
-    # If we don't see them when running manually, the script itself is failing to start.
-    print("\033[H\033[J", end="") # Clear screen
-    print("🚀 Starting Minimal Test MCP Server via stdio...")
-    print(f"Timestamp: {time.time()}")
-    
-    # This starts the communication with the Gemini CLI.
-    test_mcp.run(transport="stdio")
-
-
-if __name__ == "__main__":
-    print("Running as a standalone script.")
-    main()

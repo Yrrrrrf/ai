@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from lib.model.pso import PSO
 from lib.benchmarks.fn import benchmark_functions, run_benchmark
-from lib.utils.asset_manager import AssetManager
+from lib.tools.asset_manager import AssetManager
 
 
 def test_all_benchmarks():

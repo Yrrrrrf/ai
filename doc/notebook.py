@@ -30,16 +30,18 @@ project_root = setup_project_path()
 
 
 # * Main imports
-from src.lib.utils.asset_manager import AssetType, am
 
+# ^ assets manager
+from lib.tools.asset_manager import AssetType, am
+
+# ^ libs for data handling and visualization
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-
-# * Common imports for AI notebooks
-from src.lib.ga import GeneticAlgorithm
-from src.lib.pso import PSO
+# ^ src imports
+from src.lib.model.ga import GeneticAlgorithm
+from src.lib.model.pso import PSO
 
 
 # Set seeds for reproducibility

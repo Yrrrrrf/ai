@@ -11,6 +11,7 @@ test_mcp = FastMCP(
     instructions="A simple server to generate random numbers for debugging.",
 )
 
+
 # 2. Define a very simple tool with no external dependencies.
 @test_mcp.tool()
 def generate_random_number(max_value: int = 100) -> str:

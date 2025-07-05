@@ -106,3 +106,14 @@ def analyze_codebase(
     except Exception as e:
         # Return a clean, user-friendly error message if something goes wrong.
         return f"Error: Failed to analyze repository '{repo_url}'.\nReason: {e}"
+
+
+def main():
+    print("\033[H\033[J", end="")
+    print("Starting MCP server...")
+    # * it only handles the 1st server, the code_analyzer_mcp!
+    code_analyzer_mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

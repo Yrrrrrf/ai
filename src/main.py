@@ -1,15 +1,19 @@
 # src/main.py
+# main entry point for the application...
 
-from lib.benchmarks.bench_pso import test_all_benchmarks, compare_parameters
-from lib.tools.formatting import MenuItems, run_menu_dispatcher
+# it's more like the main testing script!
+
+# * imports
+from lib.ui import *
+from lib.benchmark import run as run_benchmarks
+
+
+def main():
+    console.clear()
+    console.print(Panel("[green]AI Learning Journey[/]", border_style="green dim"))
+
+    run_benchmarks()
 
 
 if __name__ == "__main__":
-    script_menu_items: MenuItems = {
-        "1": ("Run all PSO benchmarks", test_all_benchmarks),
-        "2": ("Compare PSO parameters", compare_parameters),
-        # Q: Quit option...
-        "q": ("Quit Application", None),  # None indicates this is a quit option
-    }
-
-    run_menu_dispatcher(title="AI Project Main Menu", menu_items=script_menu_items)
+    main()

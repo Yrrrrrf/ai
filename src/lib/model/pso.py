@@ -185,14 +185,17 @@ class PSO:
         plt.grid(True)
         plt.show()
 
-    # ^ THIS FN ONLY WORKS WHEN CALLED FROM A SCRIPT!
-    # ^ THIS FN WOULDN'T WORK IF CALLED FROM A JUPYTER NOTEBOOK!
-    # todo: add save_path parameter, and save the plot to that path
-    # todo: Improve the fn to make it work in both cases
-    def visualize_particles_2d(self, interval=20, save_path=None):
+    def visualize_particles_2d(
+        self, interval=50, save_path=None, title="Particle Swarm Optimization"
+    ):
         """
         Create an animation of particles moving in 2D space.
         Only works for 2D optimization problems.
+
+        Args:
+            interval (int, optional): Delay between frames in milliseconds.
+            save_path (str, optional): Path to save the animation as a GIF.
+            title (str, optional): The title for the animation plot.
         """
         if self.dimensions != 2:
             print("Visualization only available for 2D problems.")
@@ -228,9 +231,10 @@ class PSO:
         particles_scatter = ax.scatter([], [], c="white", edgecolors="black", s=50)
 
         # Set plot boundaries and labels
+        # Set plot boundaries and labels
         ax.set_xlim(self.bounds[0], self.bounds[1])
         ax.set_ylim(self.bounds[0], self.bounds[1])
-        ax.set_title("Particle Swarm Optimization")
+        ax.set_title(title)  # Use the title parameter here
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         ax.grid(True)
@@ -259,3 +263,65 @@ class PSO:
         plt.show()
 
         return animation
+
+    def plot_final_state_on_axis(self, ax, title=""):
+        """
+        Draws the contour plot and the final state of particles on a given axis.
+        This is a static version of the visualization, suitable for subplots.
+
+        Args:
+            ax (matplotlib.axes.Axes): The axis object to draw on.
+            title (str, optional): The title for the subplot.
+        """
+        if self.dimensions != 2:
+            ax.text(
+                0.5,
+                0.5,
+                "2D plot not available\nfor >2 dimensions",
+                ha="center",
+                va="center",
+            )
+            return
+
+        # Create a contour plot of the fitness function
+        x = np.linspace(self.bounds[0], self.bounds[1], 100)
+        y = np.linspace(self.bounds[0], self.bounds[1], 100)
+        X, Y = np.meshgrid(x, y)
+        Z = np.zeros_like(X)
+        for i in range(X.shape[0]):
+            for j in range(X.shape[1]):
+                Z[i, j] = self.fitness_function(np.array([X[i, j], Y[i, j]]))
+
+        ax.contourf(X, Y, Z, 50, cmap="viridis", alpha=0.7)
+
+        # Plot final particle positions (from the last entry in history)
+        final_positions = self.positions_history[-1]
+        ax.scatter(
+            final_positions[:, 0],
+            final_positions[:, 1],
+            c="white",
+            edgecolors="black",
+            s=20,
+            alpha=0.8,
+            label="Particles",
+        )
+
+        # Plot the final global best position
+        ax.scatter(
+            self.global_best_position[0],
+            self.global_best_position[1],
+            c="red",
+            marker="*",
+            s=200,
+            edgecolors="white",
+            label="Global Best",
+        )
+
+        # Set plot boundaries and labels
+        ax.set_xlim(self.bounds[0], self.bounds[1])
+        ax.set_ylim(self.bounds[0], self.bounds[1])
+        ax.set_title(title)
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.grid(True)
+        ax.legend()

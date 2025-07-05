@@ -40,8 +40,6 @@ dependencies = [
 	# "transformers>=4.49.0", # State-of-art NLP models
 	# "spacy>=3.8.4",        # Industrial-strength NLP
 	# "nltk>=3.9.1",         # Natural Language Toolkit
-
-
 	# AI
 	"google-genai>=1.21.1",
 	# * MCP
@@ -49,6 +47,7 @@ dependencies = [
 	# Some:
 	"httpx>=0.28.1",
 	"gitingest>=0.1.5",
+	"rich>=14.0.0",
 ]
 
 [[tool.uv.index]]

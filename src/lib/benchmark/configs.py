@@ -48,9 +48,17 @@ ALGORITHM_CONFIGS = {
         # Parameters for GA are different, but the structure is the same.
         "parameter_sets": [
             {"mutation_rate": 0.01, "crossover_rate": 0.7, "label": "Standard"},
-            {"mutation_rate": 0.05, "crossover_rate": 0.8, "label": "High Mutation/Crossover"},
-            {"mutation_rate": 0.005, "crossover_rate": 0.5, "label": "Low Mutation/Crossover"},
+            {
+                "mutation_rate": 0.05,
+                "crossover_rate": 0.8,
+                "label": "High Mutation/Crossover",
+            },
+            {
+                "mutation_rate": 0.005,
+                "crossover_rate": 0.5,
+                "label": "Low Mutation/Crossover",
+            },
             {"mutation_rate": 0.02, "crossover_rate": 0.9, "label": "High Exploration"},
-        ]
-    }
+        ],
+    },
 }

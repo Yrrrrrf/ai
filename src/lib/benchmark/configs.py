@@ -10,8 +10,26 @@ benchmark logic itself.
 """
 
 # Import the algorithm classes to link them in the config
+from lib.model.ga import GeneticAlgorithm
 from ..model.pso import PSO
-# from ..model.ga import GeneticAlgorithm # <-- Ready for when you add GA
+
+
+DEFAULT_ALGO_PARAMS = {
+    "PSO": {
+        "num_particles": 30,
+        "w": 0.5,
+        "c1": 1.5,
+        "c2": 1.5,
+        "max_iterations": 100,
+    },
+    "GeneticAlgorithm": {
+        "pop_size": 100,
+        "mutation_rate": 0.01,
+        "crossover_rate": 0.7,
+        "elitism": 2,
+        "generations": 100,
+    },
+}
 
 # This dictionary is the single source of truth for hyperparameter sets.
 ALGORITHM_CONFIGS = {
@@ -25,13 +43,14 @@ ALGORITHM_CONFIGS = {
             {"w": 0.3, "c1": 1.5, "c2": 1.5, "label": "Low Inertia (Exploitation)"},
         ],
     },
-    # Example of how you would add your Genetic Algorithm in the future:
-    # "GA": {
-    #     "class": GeneticAlgorithm,
-    #     "parameter_sets": [
-    #         {"mutation_rate": 0.01, "crossover_rate": 0.7, "label": "Standard"},
-    #         {"mutation_rate": 0.05, "crossover_rate": 0.8, "label": "High Mutation"},
-    #         {"mutation_rate": 0.01, "crossover_rate": 0.5, "label": "Low Crossover"},
-    #     ]
-    # }
+    "Genetic Algorithm": {
+        "class": GeneticAlgorithm,
+        # Parameters for GA are different, but the structure is the same.
+        "parameter_sets": [
+            {"mutation_rate": 0.01, "crossover_rate": 0.7, "label": "Standard"},
+            {"mutation_rate": 0.05, "crossover_rate": 0.8, "label": "High Mutation/Crossover"},
+            {"mutation_rate": 0.005, "crossover_rate": 0.5, "label": "Low Mutation/Crossover"},
+            {"mutation_rate": 0.02, "crossover_rate": 0.9, "label": "High Exploration"},
+        ]
+    }
 }

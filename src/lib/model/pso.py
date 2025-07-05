@@ -11,8 +11,10 @@ import matplotlib.pyplot as plt
 from typing import Tuple, Callable
 from matplotlib.animation import FuncAnimation
 
+from lib.model.base import OptimizableAlgorithm
 
-class PSO:
+
+class PSO(OptimizableAlgorithm):
     def __init__(
         self,
         num_particles: int,
@@ -147,7 +149,7 @@ class PSO:
                 self.global_best_position = self.positions[current_best_idx].copy()
                 self.global_best_fitness = self.fitness_values[current_best_idx]
 
-    def optimize(self, verbose=True):
+    def run(self, verbose=True):
         """Run the PSO optimization process."""
         for iteration in range(self.max_iterations):
             self.update_velocity()  # Update velocities

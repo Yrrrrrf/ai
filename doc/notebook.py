@@ -32,7 +32,7 @@ project_root = setup_project_path()
 # * Main imports
 
 # ^ assets manager
-from lib.tools.asset_manager import AssetType, am
+from src.lib.tools.asset_manager import AssetType, am
 
 # ^ libs for data handling and visualization
 import matplotlib.pyplot as plt

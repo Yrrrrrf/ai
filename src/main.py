@@ -5,6 +5,7 @@
 
 # * imports
 from lib.ui import *
+from rich.panel import Panel
 from lib.benchmark import run as run_benchmarks
 
 

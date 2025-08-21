@@ -34,6 +34,7 @@ project_root = setup_project_path()
 # ^ assets manager
 from src.lib.tools.asset_manager import AssetType, am
 
+
 # ^ libs for data handling and visualization
 import matplotlib.pyplot as plt
 import numpy as np
@@ -45,7 +46,7 @@ from src.lib.model.pso import PSO
 
 
 # Set seeds for reproducibility
-def set_seeds(seed: int = None):
+def set_seeds(seed: int | None = None):
     if seed is None:
         seed = 42
         print(
@@ -58,3 +59,6 @@ def set_seeds(seed: int = None):
 
 
 seed = set_seeds()
+
+# re-export the AssetManager and am:
+__all__ = ["AssetType", "am"]

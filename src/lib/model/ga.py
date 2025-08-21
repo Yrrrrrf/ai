@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Tuple, Callable, Any
-from lib.model.base import OptimizableAlgorithm
+from src.lib.model.base import OptimizableAlgorithm
 
 
 class GeneticAlgorithm(OptimizableAlgorithm):

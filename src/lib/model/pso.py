@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from typing import Tuple, Callable
 from matplotlib.animation import FuncAnimation
 
-from lib.model.base import OptimizableAlgorithm
+from src.lib.model.base import OptimizableAlgorithm
 
 
 class PSO(OptimizableAlgorithm):

@@ -23,7 +23,8 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output-dir",
-        default=r"C:\\Users\\fire\\Downloads",
+        #default=r"C:\\Users\\fire\\Downloads",
+        default=r"/home/yrrrrrf/Downloads",
         help="Directory to save the output file",
     )
 

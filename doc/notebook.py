@@ -36,13 +36,10 @@ from src.lib.tools.asset_manager import AssetType, am
 
 
 # ^ libs for data handling and visualization
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
 # ^ src imports
-from src.lib.model.ga import GeneticAlgorithm
-from src.lib.model.pso import PSO
 
 
 # Set seeds for reproducibility

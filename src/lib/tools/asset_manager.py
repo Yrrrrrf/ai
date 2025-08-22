@@ -5,11 +5,10 @@ Provides utilities to access files and resources from anywhere in the project st
 
 from pathlib import Path
 from enum import Enum
-from typing import Union, Optional, List, Dict, Any, Callable
+from typing import Union, Optional, Callable
 import sys
 import importlib
 import inspect
-import os
 
 
 class AssetType(Enum):

@@ -1,7 +1,6 @@
 # mpc/test_server.py
 
 import random
-import time
 from mcp.server.fastmcp import FastMCP
 
 # 1. Initialize a completely new, simple server instance.

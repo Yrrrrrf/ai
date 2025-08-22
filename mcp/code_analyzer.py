@@ -3,7 +3,7 @@ from typing import Optional, List
 
 # Import our newly refactored library function
 # This assumes the mpc server is run from the project root.
-from typing import Optional, Tuple, List
+from typing import Tuple
 from gitingest import ingest
 
 

@@ -28,27 +28,32 @@ The project is organized into several key directories, each with a distinct purp
 
 This project uses [**`uv`**](https://docs.astral.sh/uv/), a fast Python package installer and resolver.
 
-#### 1. Install Dependencies
+### Install Dependencies
+
 First, sync the environment to install all required packages listed in [`pyproject.toml`](./pyproject.toml).
 
 ```sh
 uv sync
 ```
 
-#### 2. Run the Benchmark Suite
+### Run the Benchmark Suite
+
 To launch the main interactive benchmark application, run the main entry point:
 
 ```sh
-uv run python src/main.py
+uv run src/main.py
 ```
 
 This will open a terminal menu where you can select algorithms (PSO, GA) and tests to run, including convergence analysis and hyperparameter comparisons.
 
-#### 3. Run an MCP Server
+### Setup your own MCP Server!
+
+To configurate them you must add them to your favorite agentic cli. The content of this directory are useful scripts exposed via MCP.
+
 The tools in the [`mcp/`](./mcp/) directory are designed to be run as separate processes. For example, to start the code analyzer server:
 
 ```sh
-uv run python mcp/code_analyzer.py
+uv run mcp/example.py
 ```
 
 ## License

@@ -7,10 +7,12 @@
 # This file is part of some MCP server example.
 
 # Configuration example for mcpServers:
+
+# WINDOWS:
 # ```json
 # {
 #     "mcpServers": {
-#         "some_tool": {
+#         "mcp_example": {
 #             "command": "uv",  // or your python interpreter command
 #             "args": ["run", ".\\mcp\\example.py"],  // the script to run
 #             "cwd": "C:\\Users\\fire\\Lab\\ai",  // current working directory
@@ -19,16 +21,27 @@
 #     }
 # }
 # ```
+#
+# LINUX:
+# ```json
+#     "mcp_example": {
+#       "command": "uv",  // or your python interpreter command
+#       "args": ["run", "./mcp/example.py"],  // the script to run
+#       "cwd": "/home/yrrrrrf/lab/ai",  // current working directory
+#       "timeout": 10000  // timeout in milliseconds
+#     }
+# ```
+
 from mcp.server.fastmcp import FastMCP
 
 
-some_mcp = FastMCP(
+example_mcp = FastMCP(
     name="Simple Test Server!",
 )
 
 
-@some_mcp.tool()
-def some_tool() -> str:
+@example_mcp.tool()
+def example_tool() -> str:
     """
     A simple tool that returns a fixed string.
     """
@@ -40,7 +53,7 @@ def main():
     print("\033[H\033[J", end="")
     print("Starting custom MCP server...")
     print("You can now use this server to test your tools.")
-    some_mcp.run(transport="stdio")
+    example_mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

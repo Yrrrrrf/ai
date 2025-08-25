@@ -21,3 +21,14 @@ def generate_random_number(max_value: int = 100) -> str:
     print(f"INFO: Tool 'generate_random_number' was called with max_value={max_value}.")
     num = random.randint(1, max_value)
     return f"Your random number is: {num}"
+
+
+def main():
+    print("\033[H\033[J", end="")
+    print("Starting custom MCP server...")
+    print("You can now use this server to test your tools.")
+    test_mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

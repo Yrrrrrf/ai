@@ -32,7 +32,7 @@ dependencies = [
 	"polars>=1.32.3", # Fast DataFrame library in Rust
 	# "scikit-learn>=1.7.1", # Traditional machine learning
 	# "scipy>=1.16.1",       # Scientific computing
-	"matplotlib>=3.10.5", # Plotting and visualization
+	"matplotlib>=3.10.6", # Plotting and visualization
 	"seaborn>=0.13.2", # Statistical data visualization
 	# Computer Vision
 	"opencv-python>=4.12.0.88", # CV2 for computer vision
@@ -42,9 +42,9 @@ dependencies = [
 	# "spacy>=3.8.7",        # Industrial-strength NLP
 	# "nltk>=3.9.1",         # Natural Language Toolkit
 	# AI
-	"google-genai>=1.31.0",
+	"google-genai>=1.32.0",
 	# * MCP
-	"mcp[cli]>=1.13.0",
+	"mcp[cli]>=1.13.1",
 	# Some:
 	"httpx>=0.28.1",
 	"gitingest>=0.3.1",

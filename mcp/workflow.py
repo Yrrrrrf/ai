@@ -22,6 +22,7 @@ workflow_server = FastMCP(
 
 # --- Prompt Definitions ---
 
+
 @workflow_server.prompt(title="Generate Commit Message")
 def gen_commit_message(focus: Optional[str] = None) -> str:
     """
@@ -61,6 +62,7 @@ def gen_release_notes(
 
 
 # --- Tool Definitions ---
+
 
 @workflow_server.tool()
 def stage_and_commit(
@@ -116,6 +118,7 @@ def git_snapshot_now() -> str:
 
 
 # --- Server Execution ---
+
 
 def main():
     """Main function to start the MCP server."""

@@ -21,6 +21,7 @@ directives_server = FastMCP(
 
 # --- Prompt Definitions ---
 
+
 @directives_server.prompt(title="Set Core Development Philosophy")
 def get_core_philosophy() -> str:
     """
@@ -52,11 +53,14 @@ def directive_svelte5() -> str:
 
 # --- Server Execution ---
 
+
 def main():
     """Main function to start the MCP server."""
     print("\033[H\033[J", end="")
     print("🚀 Starting AI Directives MCP server...")
-    print(f"✅ Server is ready. It exposes prompts to configure your AI assistant's behavior.")
+    print(
+        f"✅ Server is ready. It exposes prompts to configure your AI assistant's behavior."
+    )
     directives_server.run()
 
 

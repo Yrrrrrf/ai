@@ -19,6 +19,7 @@ planning_server = FastMCP(
 
 # --- Prompt Definitions ---
 
+
 @planning_server.prompt(title="Get Project Blueprint Guide")
 def get_guide_blueprint() -> str:
     """
@@ -29,6 +30,7 @@ def get_guide_blueprint() -> str:
 
 
 # --- Server Execution ---
+
 
 def main():
     """Main function to start the MCP server."""

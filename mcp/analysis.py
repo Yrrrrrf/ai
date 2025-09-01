@@ -21,6 +21,7 @@ analysis_server = FastMCP(
 
 # --- Prompt Definitions ---
 
+
 @analysis_server.prompt(title="Analyze Project Codebase")
 def analyze_codebase() -> str:
     """
@@ -98,11 +99,14 @@ def generate_utility_and_tests(
 
 # --- Server Execution ---
 
+
 def main():
     """Main function to start the MCP server."""
     print("\033[H\033[J", end="")
     print("🚀 Starting Code Intelligence MCP server...")
-    print("✅ Server is ready. It exposes prompts for code analysis, refactoring, and generation.")
+    print(
+        "✅ Server is ready. It exposes prompts for code analysis, refactoring, and generation."
+    )
     analysis_server.run()
 
 

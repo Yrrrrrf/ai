@@ -13,6 +13,7 @@ making the MCP server configuration portable and eliminating hardcoded paths.
 from pathlib import Path
 from functools import lru_cache
 
+
 class PromptLoader:
     """A class to manage loading master prompts from a central vault."""
 
@@ -23,15 +24,18 @@ class PromptLoader:
         """
         self.project_root = self._find_project_root()
         if not self.project_root:
-            raise FileNotFoundError("Could not find the project root containing 'pyproject.toml'.")
+            raise FileNotFoundError(
+                "Could not find the project root containing 'pyproject.toml'."
+            )
 
         # The path to your prompts vault, relative to the project root.
         self.prompts_path = self.project_root / "mcp" / "prompts"
 
         if not self.prompts_path.is_dir():
             # NOTE: This check runs at startup. The actual file check is in the load() method.
-            print(f"Warning: Prompt directory not found at the configured path: {self.prompts_path}")
-
+            print(
+                f"Warning: Prompt directory not found at the configured path: {self.prompts_path}"
+            )
 
     def _find_project_root(self, marker: str = "pyproject.toml") -> Path | None:
         """
@@ -65,8 +69,9 @@ class PromptLoader:
                 f"Error: Master prompt template '{filename}' not found "
                 f"in '{self.prompts_path}'. Please ensure the file exists."
             )
-            print(error_message) # Log to server console
-            return error_message # Return error to the LLM agent
+            print(error_message)  # Log to server console
+            return error_message  # Return error to the LLM agent
+
 
 # Create a singleton instance to be imported and used by all MCP servers.
 prompt_loader = PromptLoader()

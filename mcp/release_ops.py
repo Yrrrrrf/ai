@@ -32,7 +32,8 @@ from functools import lru_cache
 # The hardcoded absolute path to your master prompts directory.
 PROMPTS_VAULT_DIRECTORY = Path("/home/yrrrrrf/vault/300-Yrrrrrf/prompts/")
 
-@lru_cache(maxsize=None) # Still cache the file read for efficiency
+
+@lru_cache(maxsize=None)  # Still cache the file read for efficiency
 def _load_master_prompt(filename: str) -> str:
     """
     A simple, private helper to load a master prompt template from the vault.
@@ -55,6 +56,7 @@ def _load_master_prompt(filename: str) -> str:
             f"in '{PROMPTS_VAULT_DIRECTORY}'. Please ensure the file exists."
         )
 
+
 # --- 2. MCP Server and Hybrid Function Definitions ---
 
 release_ops = FastMCP(
@@ -65,6 +67,7 @@ release_ops = FastMCP(
 # ==============================================================================
 # TASK 1: Generating and Executing a Commit
 # ==============================================================================
+
 
 @release_ops.prompt(title="Generate Commit Message Content")
 def generate_commit_message_content(focus: Optional[str] = None) -> str:
@@ -80,8 +83,11 @@ def generate_commit_message_content(focus: Optional[str] = None) -> str:
         return f"{base_prompt}\n\n**Note to LLM:** The user's focus is: '{focus}'. Tailor the message accordingly."
     return base_prompt
 
+
 @release_ops.tool()
-def stage_and_commit(commit_title: str, commit_body: str, files_to_add: List[str]) -> str:
+def stage_and_commit(
+    commit_title: str, commit_body: str, files_to_add: List[str]
+) -> str:
     """
     Constructs and returns the shell command to stage specified files and create a Git commit with the provided title and body.
     This tool PREPARES the command; it does not execute it. The agent is responsible for execution after user confirmation.
@@ -93,24 +99,28 @@ def stage_and_commit(commit_title: str, commit_body: str, files_to_add: List[str
     """
     if not files_to_add:
         return "Error: No files specified to stage for the commit."
-    
+
     # Sanitize file paths to handle spaces or just use '.' as is.
     safe_files = " ".join([f'"{f}"' for f in files_to_add])
-    
+
     add_command = f"git add {safe_files}"
     commit_command = f'git commit -m "{commit_title}" -m "{commit_body}"'
-    
+
     full_command = f"{add_command} && {commit_command}"
-    
-    print(f"INFO: Prepared git command: {full_command}") # For server-side logging
+
+    print(f"INFO: Prepared git command: {full_command}")  # For server-side logging
     return full_command
+
 
 # ==============================================================================
 # TASK 2: Generating and Saving Release Notes
 # ==============================================================================
 
+
 @release_ops.prompt(title="Generate Release Notes Content")
-def generate_release_notes_content(repo_url: str, old_version: str, new_version: str, focus: Optional[str] = None) -> str:
+def generate_release_notes_content(
+    repo_url: str, old_version: str, new_version: str, focus: Optional[str] = None
+) -> str:
     """
     Generates ONLY the Markdown content for GitHub release notes.
     The agent should call this to get the content, then call the 'save_release_notes' tool with the result.
@@ -122,17 +132,16 @@ def generate_release_notes_content(repo_url: str, old_version: str, new_version:
         focus (Optional[str]): A hint about the changes.
     """
     prompt_template = _load_master_prompt("new-version-release.md")
-    repo_name = repo_url.split('/')[-1]
+    repo_name = repo_url.split("/")[-1]
 
     # Your .md file should contain {REPO_NAME}, {PREVIOUS_VERSION}, and {NEW_VERSION}.
     formatted_prompt = prompt_template.format(
-        REPO_NAME=repo_name,
-        PREVIOUS_VERSION=old_version,
-        NEW_VERSION=new_version
+        REPO_NAME=repo_name, PREVIOUS_VERSION=old_version, NEW_VERSION=new_version
     )
     if focus:
         return f"{formatted_prompt}\n\n**Note to LLM:** The user's focus is: '{focus}'. Tailor the notes accordingly."
     return formatted_prompt
+
 
 @release_ops.tool()
 def save_release_notes(content: str, output_path: str = "RELEASE-NOTES.md") -> str:
@@ -150,7 +159,9 @@ def save_release_notes(content: str, output_path: str = "RELEASE-NOTES.md") -> s
     except Exception as e:
         return f"Error: Failed to save release notes to '{output_path}'. Reason: {e}"
 
+
 # --- 3. Server Execution ---
+
 
 def main():
     """Main function to start the MCP server."""
@@ -159,6 +170,7 @@ def main():
     print(f"📘 Loading prompt templates from: {PROMPTS_VAULT_DIRECTORY}")
     print("✅ Server is ready. It exposes prompts and tools for Git/GitHub tasks.")
     release_ops.run()
+
 
 if __name__ == "__main__":
     main()

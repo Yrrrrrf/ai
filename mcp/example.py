@@ -32,6 +32,7 @@
 #     }
 # ```
 
+from random import randint
 from mcp.server.fastmcp import FastMCP
 
 
@@ -47,6 +48,16 @@ def example_tool() -> str:
     """
     string = "\033[92mThis is a test tool that returns a fixed string.\033[0m"
     return string
+
+
+@example_mcp.tool()
+def generate_random_number(max_value: int = 100) -> str:
+    """
+    Generates a random integer between 1 and the specified max_value.
+    """
+    # This print will show up in your terminal if you run it manually.
+    print(f"INFO: Tool 'generate_random_number' was called with max_value={max_value}.")
+    return f"Your random number is: {randint(1, max_value)}"
 
 
 def main():

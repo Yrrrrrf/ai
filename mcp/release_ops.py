@@ -11,6 +11,7 @@ This server follows a two-call pattern:
 2. Call a `@tool` with that content to perform a system action (like committing or saving a file).
 """
 
+from datetime import datetime
 from mcp.server.fastmcp import FastMCP
 from pathlib import Path
 from typing import Optional, List
@@ -160,7 +161,34 @@ def save_release_notes(content: str, output_path: str = "RELEASE-NOTES.md") -> s
         return f"Error: Failed to save release notes to '{output_path}'. Reason: {e}"
 
 
-# --- 3. Server Execution ---
+# ==============================================================================
+# TASK 3: Creating a Quick Snapshot Commit
+# ==============================================================================
+
+
+@release_ops.tool()
+def git_snapshot_now() -> str:
+    """
+    Creates a timestamped 'snapshot' commit, immediately staging all current changes.
+    This is a quick way to save work in progress without crafting a detailed commit message.
+    The agent should use this when the user asks to "snapshot," "save my progress," or make a quick save.
+    """
+    # 1. Generate the current timestamp in the desired format (e.g., 2025-09-01:14-30-55)
+    timestamp = datetime.now().strftime("%Y-%m-%d:%H-%M-%S")
+
+    # 2. Construct the simple, descriptive commit message
+    commit_message = f"snapshot {timestamp}"
+
+    # 3. Define the shell commands to stage everything and then commit
+    stage_command = "git add ."
+    commit_command = f'git commit -m "{commit_message}"'
+
+    # 4. Chain the commands together. The commit will only run if 'git add' succeeds.
+    full_command = f"{stage_command} && {commit_command}"
+
+    # 5. Log the prepared command on the server for debugging and return it to the agent.
+    print(f"INFO: Prepared snapshot command: {full_command}")
+    return full_command
 
 
 def main():

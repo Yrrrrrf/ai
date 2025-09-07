@@ -1,4 +1,4 @@
-# FILE: scripts/ingest_all_from_gh_final.py
+# FILE: scripts/ingest_gh.py
 """
 GitHub Profile Ingestor (Final Polished Version)
 
@@ -15,7 +15,7 @@ import httpx
 from typing import List, Dict, Any, Coroutine, Tuple
 
 # --- Import Rich Components ---
-from rich.console import Console
+from rich.console import Console, RenderableType
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -23,11 +23,36 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
     MofNCompleteColumn,
+    ProgressColumn,
+    Task,
 )
 from rich.panel import Panel
+from rich.text import Text
 
 # --- Configuration ---
 MAX_CONCURRENT_TASKS = 8
+
+
+# --- Custom Rich Progress Column ---
+class StatusSpinnerColumn(ProgressColumn):
+    """A custom progress column that shows a spinner for active tasks
+    and a completion icon ('✓' or '✗') for finished tasks."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Encapsulate a standard spinner column to handle the animation
+        self.spinner = SpinnerColumn(spinner_name="dots")
+
+    def render(self, task: "Task") -> RenderableType:
+        """Render the spinner or a final status icon."""
+        # If the task is finished, display the status icon from the custom field.
+        if task.finished:
+            # Default to a green check if no specific icon is provided.
+            icon = task.fields.get("status_icon", "[bold green]✓[/bold green]")
+            return Text.from_markup(icon)
+
+        # If the task is not finished, render the spinner.
+        return self.spinner.render(task)
 
 
 async def get_public_repos(username: str, console: Console) -> List[Dict[str, Any]]:
@@ -35,8 +60,10 @@ async def get_public_repos(username: str, console: Console) -> List[Dict[str, An
     Asynchronously fetches a list of public repositories for a user.
     """
     api_url = f"https://api.github.com/users/{username}/repos"
-    
-    with console.status(f"[bold yellow]Fetching repositories for '{username}'...") as status:
+
+    with console.status(
+        f"[bold yellow]Fetching repositories for '{username}'..."
+    ) as status:
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
@@ -79,7 +106,7 @@ async def run_ingest_subprocess(repo_url: str) -> Tuple[bool, str]:
 
     if process.returncode != 0:
         return False, stderr.decode().strip()
-    
+
     return True, ""
 
 
@@ -93,12 +120,12 @@ async def main():
         "username", help="The GitHub username to fetch repositories from."
     )
     args = parser.parse_args()
-    
+
     console = Console()
-    
+
     # --- Step 1: Fetch and Filter Repositories ---
     all_repos = await get_public_repos(args.username, console)
-    
+
     # Filter out the special profile repository (CASE-INSENSITIVE)
     profile_repo_name_lower = args.username.lower()
     repositories = [
@@ -106,47 +133,58 @@ async def main():
     ]
 
     if len(repositories) < len(all_repos):
-        console.log(f"[yellow]Ignoring profile repository: {args.username}/{args.username}")
+        console.log(
+            f"[yellow]Ignoring profile repository: {args.username}/{args.username}"
+        )
 
     if not repositories:
         console.log("[yellow]No repositories to process. Exiting.")
         return
 
-    # --- Step 2: Set up and run the Rich Progress UI ---
+    # --- Step 2: Set up and run the Rich Progress UI with the custom column ---
     progress_columns = (
-        TextColumn("  "), # Indent for a cleaner look
-        SpinnerColumn(),
+        TextColumn("  "),  # Indent for a cleaner look
+        StatusSpinnerColumn(),  # Our new custom column!
         TextColumn("[progress.description]{task.description}"),
         BarColumn(),
         MofNCompleteColumn(),
         TimeElapsedColumn(),
-        TextColumn("[bold green]{task.fields[status]}"),
     )
-    
+
     failed_repos = []
 
     with Progress(*progress_columns, console=console) as progress:
         semaphore = asyncio.Semaphore(MAX_CONCURRENT_TASKS)
-        
-        main_task_description = f"Ingesting repos for [bold magenta]{args.username}[/bold magenta]"
-        main_task = progress.add_task(main_task_description, total=len(repositories), status="")
+
+        main_task_description = (
+            f"Ingesting repos for [bold magenta]{args.username}[/bold magenta]"
+        )
+        main_task = progress.add_task(main_task_description, total=len(repositories))
 
         async def ingest_with_semaphore(repo: Dict[str, Any]):
             repo_name = repo["name"]
             repo_url = repo["clone_url"]
-            
-            task_id = progress.add_task(f"{repo_name}", total=1, status="⏳ Queued", start=False, parent=main_task, visible=True)
+
+            # Add a task for this specific repo. The StatusSpinnerColumn will show an animation.
+            task_id = progress.add_task(
+                f"{repo_name}", total=1, start=False, parent=main_task, visible=True
+            )
 
             async with semaphore:
                 progress.start_task(task_id)
-                progress.update(task_id, status="Cloning...")
-                
+
                 success, error_msg = await run_ingest_subprocess(repo_url)
-                
+
                 if success:
-                    progress.update(task_id, completed=1, status="[bold green]✓ Done")
+                    # On success, update the task and set the 'status_icon' field for our custom column.
+                    progress.update(
+                        task_id, completed=1, status_icon="[bold green]✓[/bold green]"
+                    )
                 else:
-                    progress.update(task_id, completed=1, status="[bold red]✗ Failed")
+                    # On failure, set a different 'status_icon' and record the error.
+                    progress.update(
+                        task_id, completed=1, status_icon="[bold red]✗[/bold red]"
+                    )
                     failed_repos.append((repo_name, error_msg))
 
                 progress.update(main_task, advance=1)
@@ -154,8 +192,8 @@ async def main():
         tasks = [ingest_with_semaphore(repo) for repo in repositories]
         await asyncio.gather(*tasks)
 
-    # --- Step 3: Final Summary (without rules) ---
-    console.print() # Add a newline for spacing
+    # --- Step 3: Final Summary (unchanged) ---
+    console.print()  # Add a newline for spacing
     console.print("[bold green]Ingestion Complete![/bold green]")
     success_count = len(repositories) - len(failed_repos)
     console.print(f"  [green]Successful:[/green] {success_count}")
@@ -164,7 +202,13 @@ async def main():
     if failed_repos:
         console.print("\n--- [bold red]Failure Details[/bold red] ---")
         for name, reason in failed_repos:
-            console.print(Panel(reason, title=f"Error in repository: [bold]{name}[/bold]", border_style="red"))
+            console.print(
+                Panel(
+                    reason,
+                    title=f"Error in repository: [bold]{name}[/bold]",
+                    border_style="red",
+                )
+            )
 
 
 if __name__ == "__main__":

@@ -1,42 +1,38 @@
-# FILE: scripts/ingest_gh.py
+# FILE: scripts/ingest_all_from_gh_async.py
 """
-GitHub Profile Ingestor
+GitHub Profile Ingestor (Asynchronous Version)
 
 This script fetches all public repositories for a given GitHub user and
-processes each one using the logic from the 'gitintest.py' script.
+processes each one concurrently using asyncio and separate subprocesses
+for significant speed improvement.
 """
 
 import argparse
 import sys
+import asyncio
+from pathlib import Path
 import httpx
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Coroutine
 
-# --- Import the core, reusable functions from your existing script ---
-# This is the best practice for reusing code and ensures identical behavior.
-from gitintest import (
-    process_repository,
-    save_to_file,
-    extract_author_project,
-)
+# --- Configuration ---
+# Controls how many repositories are cloned at the same time.
+# Adjust based on your network and CPU. 5-10 is a safe range.
+MAX_CONCURRENT_TASKS = 8
 
 
-def get_public_repos(username: str) -> List[Dict[str, Any]]:
+async def get_public_repos(username: str) -> List[Dict[str, Any]]:
     """
-    Fetches a list of public repositories for a user from the GitHub API.
-
-    Args:
-        username: The GitHub username.
-
-    Returns:
-        A list of repository data dictionaries.
+    Asynchronously fetches a list of public repositories for a user.
     """
     api_url = f"https://api.github.com/users/{username}/repos"
     print(f"Fetching repositories for '{username}' from {api_url}...")
 
     try:
-        with httpx.Client() as client:
-            response = client.get(api_url, params={"sort": "updated", "per_page": 100})
-            response.raise_for_status()  # Raise an exception for bad status codes (404, 500, etc.)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                api_url, params={"sort": "updated", "per_page": 100}
+            )
+            response.raise_for_status()
 
         repos = response.json()
         print(f"✅ Found {len(repos)} public repositories.")
@@ -53,55 +49,81 @@ def get_public_repos(username: str) -> List[Dict[str, Any]]:
         sys.exit(1)
 
 
-def main():
-    """Main function to orchestrate the ingestion process."""
+async def run_ingest_subprocess(repo_name: str, repo_url: str) -> bool:
+    """
+    Runs the synchronous 'gitintest.py' script in a separate process
+    for a single repository.
+
+    Returns:
+        True on success, False on failure.
+    """
+    # Important: Construct the path to the script to run
+    script_path = Path(__file__).parent / "gitintest.py"
+    
+    # We use 'sys.executable' to get the path to the current python interpreter
+    # which is the one managed by 'uv'. This is more robust than hardcoding 'python'.
+    command = [sys.executable, str(script_path), repo_url]
+
+    process = await asyncio.create_subprocess_exec(
+        *command,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+
+    stdout, stderr = await process.communicate()
+
+    if process.returncode != 0:
+        print(
+            f"❌ FAILED to process {repo_name}. Stderr:\n{stderr.decode()}",
+            file=sys.stderr,
+        )
+        return False
+    else:
+        # The original script already prints its success message.
+        # We can add one here if we want more verbose async-specific logging.
+        return True
+
+
+async def main():
+    """Main async function to orchestrate the concurrent ingestion process."""
     parser = argparse.ArgumentParser(
-        description="Ingest all public repositories from a GitHub user.",
+        description="Concurrently ingest all public repositories from a GitHub user.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("username", help="The GitHub username to fetch repositories from.")
-
+    parser.add_argument(
+        "username", help="The GitHub username to fetch repositories from."
+    )
     args = parser.parse_args()
 
-    # --- Step 1: Get the list of repositories ---
-    repositories = get_public_repos(args.username)
+    repositories = await get_public_repos(args.username)
     if not repositories:
         print("No repositories to process. Exiting.")
         return
 
-    # --- Step 2: Define the output directory to match gitintest.py behavior ---
-    # This ensures the output is saved in the same default location.
-    output_directory = "/home/yrrrrrf/Downloads"
-    print(f"Output will be saved to: {output_directory}\n")
+    # A semaphore is a concurrency primitive that will limit the number of
+    # concurrent tasks to the value of MAX_CONCURRENT_TASKS.
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_TASKS)
+    tasks: List[Coroutine] = []
+    
+    # This wrapper function will use the semaphore
+    async def ingest_with_semaphore(repo_name, repo_url):
+        async with semaphore:
+            print(f"Starting ingestion for: {repo_name}...")
+            return await run_ingest_subprocess(repo_name, repo_url)
 
-    total_repos = len(repositories)
-    success_count = 0
-    fail_count = 0
-
-    # --- Step 3: Iterate and process each repository ---
-    for i, repo in enumerate(repositories):
-        repo_name = repo["name"]
-        repo_url = repo["clone_url"]
-        print(f"--- Processing repository {i + 1}/{total_repos}: {repo_name} ---")
-        print(f"URL: {repo_url}")
-
-        try:
-            # --- Using the imported functions for identical behavior ---
-            author, project = extract_author_project(repo_url)
-            summary, tree, content = process_repository(repo_url)
-            output_file = save_to_file(
-                summary, tree, content, author, project, output_directory
-            )
-            # --- End of imported logic ---
-
-            print(f"✅ Successfully saved to: {output_file}\n")
-            success_count += 1
-
-        except Exception as e:
-            print(f"❌ FAILED to process {repo_name}. Reason: {e}\n", file=sys.stderr)
-            fail_count += 1
+    for repo in repositories:
+        task = ingest_with_semaphore(repo["name"], repo["clone_url"])
+        tasks.append(task)
+    
+    print(f"\nStarting concurrent ingestion of {len(tasks)} repositories ({MAX_CONCURRENT_TASKS} at a time)...\n")
+    
+    # asyncio.gather runs all tasks concurrently and waits for them all to finish.
+    results = await asyncio.gather(*tasks)
 
     # --- Final Summary ---
+    success_count = results.count(True)
+    fail_count = results.count(False)
+    
     print("=" * 50)
     print("Ingestion Complete!")
     print(f"  Successful: {success_count}")
@@ -110,4 +132,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # This is how you run the main async function.
+    asyncio.run(main())

@@ -1,6 +1,6 @@
 ---
 tags:
-  - master-prompt
+  - meta-prompt
 ---
 # AI DIRECTIVE: PROACTIVE ADVISOR MODE
 

@@ -1,6 +1,6 @@
 ---
 tags:
-  - master-prompt
+  - meta-prompt
 ---
 # Code Explanation & Walkthrough
 

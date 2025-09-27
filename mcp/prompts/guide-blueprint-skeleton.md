@@ -1,6 +1,6 @@
 ---
 tags:
-  - master-prompt
+  - meta-prompt
   - project
 ---
 # **ACT AS:** An expert technical co-founder and software architect.

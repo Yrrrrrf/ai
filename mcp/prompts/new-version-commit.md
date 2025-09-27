@@ -1,7 +1,7 @@
 ---
 tags:
   - github
-  - master-prompt
+  - meta-prompt
 ---
 # Conventional Git Commit Message Generation
 

@@ -1,6 +1,6 @@
 ---
 tags:
-  - master-prompt
+  - meta-prompt
 ---
 # Comprehensive Project Analysis
 

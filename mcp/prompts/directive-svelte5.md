@@ -1,6 +1,6 @@
 ---
 tags:
-  - master-prompt
+  - meta-prompt
 ---
 Based on a comprehensive analysis of your Svelte 5 projects, I have identified your recurring coding patterns and architectural preferences. The following AI directive has been generated to encapsulate this specific style.
 

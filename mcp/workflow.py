@@ -8,6 +8,8 @@ automating common Git tasks: generating commit messages and creating release not
 """
 
 from datetime import datetime
+import subprocess
+import tempfile
 from mcp.server.fastmcp import FastMCP
 from pathlib import Path
 from typing import Optional, List
@@ -23,17 +25,34 @@ workflow_server = FastMCP(
 # --- Prompt Definitions ---
 
 
-@workflow_server.prompt(title="Generate Commit Message")
-def gen_commit_message(focus: Optional[str] = None) -> str:
+@workflow_server.prompt(title="Generate and Execute a Commit")
+def generate_and_commit(focus: Optional[str] = None) -> str:
     """
-    Generates the text content for a conventional Git commit message based on staged changes.
+    Analyzes all current changes (staging them if necessary), generates a
+    conventional commit message, and executes it with the `autocommit` tool.
+    This is the primary entry point for the autocommit workflow.
 
     Args:
         focus (Optional[str]): A hint about the changes to help the LLM.
     """
-    base_prompt = prompt_loader.load("new-version-commit.md")
+    # This updated prompt now handles the "nothing staged" edge case.
+    base_prompt = """
+You are an expert software engineer. Your task is to intelligently create and execute a conventional Git commit.
+
+**Your process MUST be as follows:**
+
+1.  **Stage All Changes:** First, you MUST run `git add .` to ensure that all modified and new files are staged. This guarantees that the commit will be comprehensive.
+
+2.  **Analyze Staged Changes:** After staging, you MUST review the context of the staged code changes by inspecting `git diff --staged`.
+
+3.  **Generate a Commit Message:** Based on the changes and the user's focus, write a high-quality conventional commit message with a `title` and a `body`.
+
+4.  **Execute the Commit:** You MUST immediately call the `autocommit` tool to finalize the process. Pass the `commit_title` and `commit_body` you just generated as arguments to the tool.
+
+Do not ask for confirmation at any step. Perform this entire sequence of actions directly.
+"""
     if focus:
-        return f"{base_prompt}\n\n**Note to LLM:** The user's focus is: '{focus}'. Tailor the message accordingly."
+        return f"{base_prompt}\n\n**User's Focus for this commit is:** '{focus}'. Tailor the commit message accordingly."
     return base_prompt
 
 
@@ -65,25 +84,48 @@ def gen_release_notes(
 
 
 @workflow_server.tool()
-def stage_and_commit(
-    commit_title: str, commit_body: str, files_to_add: List[str]
-) -> str:
+def autocommit(commit_title: str, commit_body: str) -> str:
     """
-    Constructs the shell command to stage files and create a Git commit. Does not execute.
-
-    Args:
-        commit_title (str): The main commit title.
-        commit_body (str): The detailed body of the commit message.
-        files_to_add (List[str]): List of file paths to stage. Use '.' to add all.
+    Stages all current changes and safely commits them with the provided message
+    using a temporary file to prevent shell injection issues.
     """
-    if not files_to_add:
-        return "Error: No files specified to stage for the commit."
+    try:
+        # 1. Stage all changes
+        stage_command = ["git", "add", "."]
+        stage_process = subprocess.run(
+            stage_command, capture_output=True, text=True, check=True
+        )
 
-    safe_files = " ".join([f'"{f}"' for f in files_to_add])
-    add_command = f"git add {safe_files}"
-    commit_command = f'git commit -m "{commit_title}" -m "{commit_body}"'
-    full_command = f"{add_command} && {commit_command}"
-    return full_command
+    except subprocess.CalledProcessError as e:
+        return f"Error: Failed to stage files.\nGit add stderr:\n{e.stderr}"
+
+    try:
+        # 2. Create the full commit message content
+        full_commit_message = f"{commit_title}\n\n{commit_body}"
+
+        # 3. Use a temporary file to safely pass the message to Git
+        with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as tmp_file:
+            tmp_file.write(full_commit_message)
+            tmp_file_path = tmp_file.name
+
+        # 4. Execute the commit command using the file
+        commit_command = ["git", "commit", "-F", tmp_file_path]
+        commit_process = subprocess.run(
+            commit_command, capture_output=True, text=True, check=True
+        )
+
+        # 5. Clean up the temporary file
+        Path(tmp_file_path).unlink()
+
+        # 6. Return the successful output from Git
+        return f"Commit successful:\n{commit_process.stdout}"
+
+    except subprocess.CalledProcessError as e:
+        # If commit fails, return the error from Git
+        return f"Error: Git commit failed.\nGit commit stderr:\n{e.stderr}"
+    except Exception as e:
+        # Catch any other unexpected errors
+        return f"An unexpected error occurred: {e}"
 
 
 @workflow_server.tool()

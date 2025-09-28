@@ -12,7 +12,7 @@ import sys
 import asyncio
 from pathlib import Path
 import httpx
-from typing import List, Dict, Any, Coroutine, Tuple
+from typing import List, Dict, Any, Tuple
 
 # --- Import Rich Components ---
 from rich.console import Console, RenderableType

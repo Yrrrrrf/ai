@@ -59,7 +59,7 @@ def main():
     print("\033[H\033[J", end="")
     print("🚀 Starting AI Directives MCP server...")
     print(
-        f"✅ Server is ready. It exposes prompts to configure your AI assistant's behavior."
+        "✅ Server is ready. It exposes prompts to configure your AI assistant's behavior."
     )
     directives_server.run()
 

@@ -24,12 +24,12 @@ dependencies = [
 	# # "tensorflow-cpu>=2.18.0", # CPU version of TensorFlow
 	# # "tensorflow-gpu>=2.18.0", # GPU version of TensorFlow
 	# Tools
-	"notebook>=7.4.5",
+	"notebook>=7.4.7",
 	"ipykernel>=6.30.1", # Jupyter kernel
 	# Data Science & ML
 	"numpy", # Numerical computing
 	# "pandas>=1.4.0",        # Data manipulation
-	"polars>=1.32.3", # Fast DataFrame library in Rust
+	"polars>=1.33.1", # Fast DataFrame library in Rust
 	# "scikit-learn>=1.7.1", # Traditional machine learning
 	# "scipy>=1.16.1",       # Scientific computing
 	"matplotlib>=3.10.6", # Plotting and visualization
@@ -42,9 +42,9 @@ dependencies = [
 	# "spacy>=3.8.7",        # Industrial-strength NLP
 	# "nltk>=3.9.1",         # Natural Language Toolkit
 	# AI
-	"google-genai>=1.32.0",
+	"google-genai>=1.39.1",
 	# * MCP
-	"mcp[cli]>=1.13.1",
+	"mcp[cli]>=1.15.0",
 	# Some:
 	"httpx>=0.28.1",
 	"gitingest>=0.3.1",

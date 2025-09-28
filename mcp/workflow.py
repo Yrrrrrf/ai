@@ -12,7 +12,7 @@ import subprocess
 import tempfile
 from mcp.server.fastmcp import FastMCP
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 from lib.prompt_loader import prompt_loader
 
 # --- Server Definition ---
@@ -26,10 +26,10 @@ workflow_server = FastMCP(
 
 
 @workflow_server.prompt(title="Generate and Execute a Commit")
-def generate_and_commit(focus: Optional[str] = None) -> str:
+def autocommit(focus: Optional[str] = None) -> str:
     """
     Analyzes all current changes (staging them if necessary), generates a
-    conventional commit message, and executes it with the `autocommit` tool.
+    conventional commit message, and executes it with the `gen_commit_message` tool.
     This is the primary entry point for the autocommit workflow.
 
     Args:
@@ -47,7 +47,7 @@ You are an expert software engineer. Your task is to intelligently create and ex
 
 3.  **Generate a Commit Message:** Based on the changes and the user's focus, write a high-quality conventional commit message with a `title` and a `body`.
 
-4.  **Execute the Commit:** You MUST immediately call the `autocommit` tool to finalize the process. Pass the `commit_title` and `commit_body` you just generated as arguments to the tool.
+4.  **Execute the Commit:** You MUST immediately call the `gen_commit_message` tool to finalize the process. Pass the `commit_title` and `commit_body` you just generated as arguments to the tool.
 
 Do not ask for confirmation at any step. Perform this entire sequence of actions directly.
 """
@@ -56,35 +56,29 @@ Do not ask for confirmation at any step. Perform this entire sequence of actions
     return base_prompt
 
 
-@workflow_server.prompt(title="Generate Release Notes")
-def gen_release_notes(
-    repo_url: str, old_version: str, new_version: str, focus: Optional[str] = None
-) -> str:
-    """
-    Generates the Markdown content for GitHub release notes.
+# In mcp/workflow.py
 
-    Args:
-        repo_url (str): The full URL of the repository.
-        old_version (str): The previous version tag (e.g., 'v0.1.0').
-        new_version (str): The new version tag for this release (e.g., 'v0.2.0').
-        focus (Optional[str]): A hint about the changes.
+# This function is no longer a user-facing @workflow_server.prompt
+# It's now a helper function that our main prompt will use.
+def get_release_notes_template(repo_url: str, old_version: str, new_version: str) -> str:
+    """
+    Loads and formats the release notes master prompt template.
+    This is a helper for the main autorelease workflow.
     """
     prompt_template = prompt_loader.load("new-version-release.md")
     repo_name = repo_url.split("/")[-1]
 
-    formatted_prompt = prompt_template.format(
+    # Return the formatted master prompt, which will be given to the LLM
+    # as its set of instructions for HOW to write the notes.
+    return prompt_template.format(
         REPO_NAME=repo_name, PREVIOUS_VERSION=old_version, NEW_VERSION=new_version
     )
-    if focus:
-        return f"{formatted_prompt}\n\n**Note to LLM:** The user's focus is: '{focus}'. Tailor the notes accordingly."
-    return formatted_prompt
-
 
 # --- Tool Definitions ---
 
 
 @workflow_server.tool()
-def autocommit(commit_title: str, commit_body: str) -> str:
+def gen_commit_message(commit_title: str, commit_body: str) -> str:
     """
     Stages all current changes and safely commits them with the provided message
     using a temporary file to prevent shell injection issues.

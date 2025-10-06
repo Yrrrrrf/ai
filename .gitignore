@@ -13,6 +13,9 @@ wheels/
 uv.lock
 .ruff_cache
 
+# Rust generated files
+target/
+
 # project
 doc/*
 !doc/ga/

@@ -10,7 +10,6 @@ wheels/
 .venv
 
 # uv
-uv.lock
 .ruff_cache
 
 # Rust generated files

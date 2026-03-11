@@ -1,20 +1,6 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
-
-# Virtual environments
-.venv
-**/**.lock+
-
-# uv
-.ruff_cache
-
-# Rust generated files
-target/
+# all that start with a dot except .gitignore
+.*
+!.gitignore
 
 # project
 doc/*
@@ -22,7 +8,6 @@ doc/*
 !doc/pattern/
 !doc/*.py
 !doc/*.ipynb
-.env
 
 # data
 data/img/

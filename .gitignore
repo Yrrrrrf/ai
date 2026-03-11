@@ -8,7 +8,7 @@ wheels/
 
 # Virtual environments
 .venv
-**/**.lock
+**/**.lock+
 
 # uv
 .ruff_cache
@@ -29,3 +29,6 @@ data/img/
 data/temp/
 data/raw/
 data/proc/
+
+agents/azathoth
+agents/yog-sothoth

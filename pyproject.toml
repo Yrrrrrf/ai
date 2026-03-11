@@ -24,31 +24,30 @@ dependencies = [
 	# # "tensorflow-cpu>=2.18.0", # CPU version of TensorFlow
 	# # "tensorflow-gpu>=2.18.0", # GPU version of TensorFlow
 	# Tools
-	"notebook>=7.4.7",
-	"ipykernel>=6.30.1", # Jupyter kernel
+	"notebook>=7.5.1",
+	"ipykernel>=7.1.0", # Jupyter kernel
 	# Data Science & ML
 	"numpy", # Numerical computing
 	# "pandas>=1.4.0",        # Data manipulation
-	"polars>=1.34.0", # Fast DataFrame library in Rust
+	"polars>=1.36.1", # Fast DataFrame library in Rust
 	# "scikit-learn>=1.7.1", # Traditional machine learning
 	# "scipy>=1.16.1",       # Scientific computing
-	"matplotlib>=3.10.6", # Plotting and visualization
+	"matplotlib>=3.10.8", # Plotting and visualization
 	"seaborn>=0.13.2", # Statistical data visualization
 	# Computer Vision
 	"opencv-python>=4.12.0.88", # CV2 for computer vision
-	"pillow>=11.3.0", # Image processing
+	"pillow>=12.0.0", # Image processing
 	# # Natural Language Processing
 	# "transformers>=4.55.3", # State-of-art NLP models
 	# "spacy>=3.8.7",        # Industrial-strength NLP
 	# "nltk>=3.9.1",         # Natural Language Toolkit
 	# AI
-	"google-genai>=1.41.0",
+	"google-genai>=1.56.0",
 	# * MCP
-	"mcp[cli]>=1.16.0",
+	"mcp[cli]>=1.24.0",
 	# Some:
 	"httpx>=0.28.1",
-	"gitingest>=0.3.1",
-	"rich>=14.1.0",
+	"rich>=14.2.0",
 ]
 
 [[tool.uv.index]]

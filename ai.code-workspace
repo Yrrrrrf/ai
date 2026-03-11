@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "agents/azathoth"
+        },
+        {
+            "path": "agents/yog-sothoth"
+        },
+        {
+            "path": "../../vault/400-Papers"
+        },
+        {
+            "path": "../../vault/000-Knowledge/ai"
+        }
+    ]
+}

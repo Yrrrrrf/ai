@@ -2,12 +2,11 @@
 .*
 !.gitignore
 
-# project
-doc/*
-!doc/ga/
-!doc/pattern/
-!doc/*.py
-!doc/*.ipynb
+# lock files
+*.lock
+
+# research outputs (disposable, regeneratable)
+research/outputs/
 
 # data
 data/img/
@@ -15,5 +14,6 @@ data/temp/
 data/raw/
 data/proc/
 
+# agent submodules (tracked separately)
 agents/azathoth
 agents/yog-sothoth

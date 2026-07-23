@@ -137,7 +137,7 @@ def compare_hyperparameters(algorithm_class: Type[OptimizableAlgorithm]):
     try:
         chosen_problem = compatible_problems[int(choice) - 1]
         base_config = chosen_problem.get_config_for_algorithm(algo_name)
-    except (ValueError, IndexError):
+    except ValueError, IndexError:
         ui.print_message("Invalid choice.", prefix="❌ ", style="bold red")
         return
 
@@ -204,7 +204,7 @@ def view_pso_live_animation():
         problem = runnable_problems[int(choice) - 1]
         pso_config = problem.get_config_for_algorithm("PSO")
         default_params = DEFAULT_ALGO_PARAMS["PSO"]
-    except (ValueError, IndexError):
+    except ValueError, IndexError:
         ui.print_message("Invalid choice.", prefix="❌ ", style="bold red")
         return
 

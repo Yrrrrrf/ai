@@ -5,6 +5,8 @@
 # lock files
 *.lock
 
+docs/
+
 # research outputs (disposable, regeneratable)
 research/outputs/
 
